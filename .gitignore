@@ -22,3 +22,4 @@ media/
 # Ignore Django migrations
 **/migrations/*.py
 !**/migrations/__init__.py
+
