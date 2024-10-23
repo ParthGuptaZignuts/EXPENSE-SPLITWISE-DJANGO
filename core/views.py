@@ -39,7 +39,10 @@ class AuthViewSet(viewsets.ViewSet):
 
     @extend_schema(
         summary="Login to get JWT token",
-        request=None, 
+        request={
+            'username': str,
+            'password': str,
+        }, 
         responses={
             200: "JWT Token returned",
             401: "Invalid credentials"
@@ -62,7 +65,9 @@ class AuthViewSet(viewsets.ViewSet):
 
     @extend_schema(
         summary="Log out and blacklist the token",
-        request=None,
+        request={
+            'refresh_token': str
+        },
         responses={
             205: "Logged out successfully",
             400: "Bad request"
@@ -102,7 +107,9 @@ class AuthViewSet(viewsets.ViewSet):
 
     @extend_schema(
         summary="Send password reset email",
-        request=None,
+        request={
+            'email': str
+        },
         responses={
             200: "Password reset email sent",
             404: "User not found"
