@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.utils import timezone
 from core.models import UserDetails
+from accounts.models import Account 
 
 User = get_user_model()
 
@@ -100,6 +101,9 @@ class Command(BaseCommand):
                     role=user_data['role']
                 )
                 self.stdout.write(self.style.SUCCESS(f'Successfully created user details for: {user_data["username"]}'))
+
+                Account.objects.create(user=user)
+                self.stdout.write(self.style.SUCCESS(f'Successfully created account for: {user_data["username"]}'))
             else:
                 self.stdout.write(self.style.WARNING(f'User {user_data["username"]} already exists.'))
 

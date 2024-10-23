@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'core',
     # registering the swagger 
     "drf_spectacular",
+    # registering the accounts (accounts)
+    "accounts"
 ]
 
 
