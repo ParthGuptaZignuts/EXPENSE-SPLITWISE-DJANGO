@@ -1,0 +1,24 @@
+# Ignore virtual environment folder
+venv/
+env/
+your_virtual_env/
+
+# Ignore Python compiled files
+*.pyc
+__pycache__/
+
+# Ignore database files
+*.sqlite3
+
+# Ignore IDE/editor specific files
+.vscode/
+.idea/
+*.swp
+
+# Ignore static and media files (if generated during runtime)
+static/
+media/
+
+# Ignore Django migrations
+**/migrations/*.py
+!**/migrations/__init__.py
