@@ -198,8 +198,8 @@ class AuthViewSet(viewsets.ViewSet):
     )
     def delete_account(self, request):
         """Allow authenticated users to delete their account"""
-        user = request.user
-        user.delete()
+        user_details = UserDetails.objects.get(user=request.user)
+        user_details.soft_delete()
         return Response(
             {"message": "User Account deleted successfully"},
             status=status.HTTP_204_NO_CONTENT,
@@ -231,3 +231,11 @@ class AuthViewSet(viewsets.ViewSet):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    @action(detail=True, methods=["post"], url_path="restore")
+    def restore_user(self, request, pk=None):
+        """Restore a soft-deleted user"""
+        user_details = get_object_or_404(UserDetails, pk=pk, is_deleted=True)
+        user_details.restore()
+        return Response({"message": "User restored successfully"}, status=status.HTTP_200_OK)

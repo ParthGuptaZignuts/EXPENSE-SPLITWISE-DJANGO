@@ -98,4 +98,12 @@ class AccountViewSet(viewsets.ViewSet):
         user = request.user
         account = get_object_or_404(Account, pk=pk, user=user)
         account.delete()
+        account.soft_delete() 
         return Response({"message": "Account deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    
+    @action(detail=True, methods=["post"], url_path="restore")
+    def restore_account(self, request, pk=None):
+        """Restore a soft-deleted account"""
+        account = get_object_or_404(Account, pk=pk, is_deleted=True)
+        account.restore()
+        return Response({"message": "Account restored successfully"}, status=status.HTTP_200_OK)
