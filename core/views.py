@@ -28,11 +28,7 @@ class AuthViewSet(viewsets.ViewSet):
         request=UserSerializer,
         responses={201: UserSerializer, 400: "Bad Request"},
     )
-    @action(
-        detail=False, 
-        methods=["post"], 
-        url_path="signup"
-    )
+    @action(detail=False, methods=["post"], url_path="signup")
     def signup(self, request):
         """Register a new user"""
         serializer = UserSerializer(data=request.data)
@@ -54,11 +50,7 @@ class AuthViewSet(viewsets.ViewSet):
         },
         responses={200: "JWT Token returned", 401: "Invalid credentials"},
     )
-    @action(
-        detail=False, 
-        methods=["post"], 
-        url_path="login"
-    )
+    @action(detail=False, methods=["post"], url_path="login")
     def login(self, request):
         """Login and return a JWT token"""
         username = request.data.get("username")
@@ -137,11 +129,7 @@ class AuthViewSet(viewsets.ViewSet):
         request={"email": str},
         responses={200: "Password reset email sent", 404: "User not found"},
     )
-    @action(
-        detail=False, 
-        methods=["post"], 
-        url_path="forget-password"
-    )
+    @action(detail=False, methods=["post"], url_path="forget-password")
     def forget_password(self, request):
         """Send email with password reset link even if the user is logged in"""
         email = request.data.get("email")
@@ -204,7 +192,7 @@ class AuthViewSet(viewsets.ViewSet):
     )
     @action(
         detail=False,
-        methods=["delete"],
+        methods=["get"],
         url_path="delete-account",
         permission_classes=[IsAuthenticated],
     )
@@ -212,7 +200,10 @@ class AuthViewSet(viewsets.ViewSet):
         """Allow authenticated users to delete their account"""
         user = request.user
         user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            {"message": "User Account deleted successfully"},
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
     @extend_schema(
         summary="Update profile for logged-in user",

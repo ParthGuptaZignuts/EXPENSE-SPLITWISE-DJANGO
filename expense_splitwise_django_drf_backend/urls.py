@@ -33,3 +33,6 @@ urlpatterns = [
 
 if 'core' in settings.INSTALLED_APPS:
     urlpatterns.append(path('', include('core.urls')))
+
+if 'accounts' in settings.INSTALLED_APPS:
+    urlpatterns.append(path('', include('accounts.urls')))
