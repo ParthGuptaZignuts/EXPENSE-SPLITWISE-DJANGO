@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.utils import timezone
 from core.models import UserDetails
-from accounts.models import Account 
+from accounts.models import Account
+from categories.models import Categories
 
 User = get_user_model()
 
@@ -38,7 +39,7 @@ class Command(BaseCommand):
                 'is_active': True,
                 'is_superuser': False,
                 'phone_number': '0987654322',
-                'role': 'groupadmin', 
+                'role': 'groupadmin',
                 'last_login': None,
                 'date_joined': timezone.now()
             },
@@ -104,9 +105,22 @@ class Command(BaseCommand):
 
                 Account.objects.create(user=user)
                 self.stdout.write(self.style.SUCCESS(f'Successfully created account for: {user_data["username"]}'))
+
+                default_expense_fields = ['FOOD', 'BILLS', 'TRANSPORT', 'SHOPPING']
+                default_income_fields = ['SALARY', 'REFUNDS']
+
+                for field in default_expense_fields:
+                    Categories.objects.create(user=user, category_type='EXPENSE', category_name=field)
+
+                for field in default_income_fields:
+                    Categories.objects.create(user=user, category_type='INCOME', category_name=field)
+
+                self.stdout.write(self.style.SUCCESS(f'Default categories created for: {user_data["username"]}'))
+            
             else:
                 self.stdout.write(self.style.WARNING(f'User {user_data["username"]} already exists.'))
 
+            # Assign user to groups
             if user_data['is_superuser']:
                 group, _ = Group.objects.get_or_create(name='superadmin')
                 user.groups.add(group)

@@ -37,13 +37,13 @@ class AccountViewSet(viewsets.ViewSet):
     def create_account(self, request):
         """Create a new account for the logged-in user"""
         user = request.user
-        account_type = request.data.get("account_type")
+        account_name = request.data.get("account_name")
 
         # Check if the user already has an account with the same name
-        if Account.objects.filter(user=user, account_type=account_type).exists():
+        if Account.objects.filter(user=user, account_name=account_name).exists():
             return Response(
                 {
-                    "error": f"You already have an account with the name '{account_type}'."
+                    "error": f"You already have an account with the name '{account_name}'."
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -98,12 +98,17 @@ class AccountViewSet(viewsets.ViewSet):
         user = request.user
         account = get_object_or_404(Account, pk=pk, user=user)
         account.delete()
-        account.soft_delete() 
-        return Response({"message": "Account deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-    
+        account.soft_delete()
+        return Response(
+            {"message": "Account deleted successfully"},
+            status=status.HTTP_204_NO_CONTENT,
+        )
+
     @action(detail=True, methods=["post"], url_path="restore")
     def restore_account(self, request, pk=None):
         """Restore a soft-deleted account"""
         account = get_object_or_404(Account, pk=pk, is_deleted=True)
         account.restore()
-        return Response({"message": "Account restored successfully"}, status=status.HTTP_200_OK)
+        return Response(
+            {"message": "Account restored successfully"}, status=status.HTTP_200_OK
+        )

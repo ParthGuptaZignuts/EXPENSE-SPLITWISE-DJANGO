@@ -18,6 +18,7 @@ from .models import UserDetails
 from .serializers import ChangePasswordSerializer, UserDetailsSerializer, UserSerializer
 
 from accounts.models import Account
+from categories.models import Categories
 
 
 class AuthViewSet(viewsets.ViewSet):
@@ -36,6 +37,15 @@ class AuthViewSet(viewsets.ViewSet):
             user = serializer.save()
             UserDetails.objects.create(user=user)
             Account.objects.create(user=user)
+
+            default_expense_fields = ['FOOD', 'BILLS', 'TRANSPORT', 'SHOPPING']
+            default_income_fields = ['SALARY', 'REFUNDS']
+
+            for field in default_expense_fields:
+                Categories.objects.create(user=user, category_type='EXPENSE', category_name=field)
+
+            for field in default_income_fields:
+                Categories.objects.create(user=user, category_type='INCOME', category_name=field)
             return Response(
                 {"message": "User created successfully."},
                 status=status.HTTP_201_CREATED,
@@ -193,7 +203,7 @@ class AuthViewSet(viewsets.ViewSet):
     @action(
         detail=False,
         methods=["get"],
-        url_path="delete-account",
+        url_path="delete-user-account",
         permission_classes=[IsAuthenticated],
     )
     def delete_account(self, request):
